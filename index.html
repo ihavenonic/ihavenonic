@@ -9,245 +9,150 @@
 <script src="labels.js"></script>
 <style>
   :root {
-    --bg: #f5f6f8;
-    --surface: #ffffff;
-    --surface2: #eef0f3;
-    --border: #dde0e6;
-    --accent: #16a34a;
-    --accent-dim: #dcfce7;
-    --text: #111318;
-    --text-muted: #6b7280;
-    --danger: #dc2626;
-    --th-bg: #f0f2f5;
-    --row-hover: #f0f2f5;
-    --row-border: #eef0f3;
-    --scrollbar-thumb: #c8cdd6;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
+    --bg:#f5f6f8; --surface:#fff; --surface2:#eef0f3; --border:#dde0e6;
+    --accent:#16a34a; --accent-dim:#dcfce7;
+    --text:#111318; --text-muted:#6b7280; --danger:#dc2626;
+    --th-bg:#f0f2f5; --row-hover:#f0f2f5; --row-border:#eef0f3;
+    --scrollbar:#c8cdd6;
+    --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif;
   }
   [data-theme="dark"] {
-    --bg: #0e0f11;
-    --surface: #16181c;
-    --surface2: #1e2026;
-    --border: #2a2d34;
-    --accent: #4ade80;
-    --accent-dim: #1a3a26;
-    --text: #e2e4e9;
-    --text-muted: #6b7280;
-    --danger: #f87171;
-    --th-bg: #16181c;
-    --row-hover: #1e2026;
-    --row-border: #1e2026;
-    --scrollbar-thumb: #3a3d44;
+    --bg:#0e0f11; --surface:#16181c; --surface2:#1e2026; --border:#2a2d34;
+    --accent:#4ade80; --accent-dim:#1a3a26;
+    --text:#e2e4e9; --text-muted:#6b7280; --danger:#f87171;
+    --th-bg:#16181c; --row-hover:#1e2026; --row-border:#1e2026; --scrollbar:#3a3d44;
   }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;transition:background .2s,color .2s}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    min-height: 100vh;
-    transition: background .2s, color .2s;
-  }
+  /* HEADER */
+  header{border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;background:var(--surface);z-index:200}
+  .logo{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .header-sep{flex:1}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .status-label{font-family:var(--mono);font-size:11px;color:var(--text-muted)}
+  .hdr-btn{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--text-muted);transition:all .15s;white-space:nowrap}
+  .hdr-btn:hover,.hdr-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 
-  /* ── HEADER ── */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    background: var(--surface);
-    z-index: 100;
-  }
-  .logo {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .header-sep { flex: 1; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-  .status-label { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+  /* LAYOUT */
+  .layout{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 49px)}
 
-  .hdr-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 12px;
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    transition: all .15s;
-    white-space: nowrap;
-  }
-  .hdr-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .hdr-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  /* SIDEBAR */
+  aside{border-right:1px solid var(--border);overflow-y:auto;padding:16px 0;background:var(--surface)}
+  .sidebar-header{padding:0 16px 12px;font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
+  .table-item{padding:10px 16px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;display:flex;flex-direction:column;gap:3px}
+  .table-item:hover{background:var(--surface2)}
+  .table-item.active{border-left-color:var(--accent);background:var(--accent-dim)}
+  .table-name{font-size:13px;color:var(--text);line-height:1.4}
+  .table-meta{font-family:var(--mono);font-size:11px;color:var(--text-muted)}
+  .sidebar-loading{padding:16px;color:var(--text-muted);font-size:12px;font-family:var(--mono)}
 
-  /* ── LAYOUT ── */
-  .layout {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    height: calc(100vh - 49px);
-  }
+  /* MAIN */
+  main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
 
-  /* ── SIDEBAR ── */
-  aside {
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-    padding: 16px 0;
-    background: var(--surface);
-  }
-  .sidebar-header { padding: 0 16px 12px; font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .1em; }
-  .table-item { padding: 10px 16px; cursor: pointer; border-left: 3px solid transparent; transition: all .15s; display: flex; flex-direction: column; gap: 3px; }
-  .table-item:hover { background: var(--surface2); }
-  .table-item.active { border-left-color: var(--accent); background: var(--accent-dim); }
-  .table-name { font-size: 13px; color: var(--text); line-height: 1.4; }
-  .table-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
-  .sidebar-loading { padding: 16px; color: var(--text-muted); font-size: 12px; font-family: var(--mono); }
+  /* TOOLBAR */
+  .toolbar{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--surface)}
+  .toolbar-title{font-family:var(--mono);font-size:13px;color:var(--accent);flex:1;min-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  input[type=text],select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;font-family:var(--mono);font-size:12px;outline:none;transition:border-color .15s}
+  input[type=text]:focus,select:focus{border-color:var(--accent)}
+  #searchInput{width:200px}
+  #columnSelect{width:150px}
+  #pageSizeSelect{width:110px}
+  .btn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:var(--mono);font-size:12px;font-weight:600;transition:all .15s}
+  .btn-primary{background:var(--accent);color:#fff}
+  [data-theme="dark"] .btn-primary{color:#000}
+  .btn-primary:hover{opacity:.85}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-muted)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-ghost:disabled{opacity:.4;cursor:default}
+  .btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+  .btn-danger:hover{background:var(--danger);color:#fff}
 
-  /* ── MAIN ── */
-  main { display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+  /* ACTIVE FILTERS BAR */
+  .filters-bar{padding:6px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--border)}
+  .filters-bar.hidden{display:none}
+  .filter-tag{display:flex;align-items:center;gap:4px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:12px;padding:2px 8px;font-family:var(--mono);font-size:11px;color:var(--accent)}
+  .filter-tag .remove{cursor:pointer;font-size:13px;line-height:1;margin-left:2px;opacity:.7}
+  .filter-tag .remove:hover{opacity:1}
+  .filters-label{font-family:var(--mono);font-size:11px;color:var(--text-muted)}
 
-  .toolbar {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    background: var(--surface);
-  }
-  .toolbar-title { font-family: var(--mono); font-size: 13px; color: var(--accent); flex: 1; min-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* CONTENT */
+  .content-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
-  input[type=text], select {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-family: var(--mono);
-    font-size: 12px;
-    outline: none;
-    transition: border-color .15s;
-  }
-  input[type=text]:focus, select:focus { border-color: var(--accent); }
-  #searchInput { width: 200px; }
-  #columnSelect { width: 150px; }
-  #pageSizeSelect { width: 110px; }
+  /* WELCOME */
+  .welcome{flex:1;display:flex;align-items:center;justify-content:center;padding:40px}
+  .welcome.hidden{display:none}
+  .welcome-inner{max-width:560px;text-align:center}
+  .welcome-title{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--accent);margin-bottom:16px;letter-spacing:.04em}
+  .welcome-desc{font-size:14px;color:var(--text-muted);line-height:1.7;white-space:pre-wrap}
 
-  .btn { padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; font-family: var(--mono); font-size: 12px; font-weight: 600; transition: all .15s; }
-  .btn-primary { background: var(--accent); color: #fff; }
-  [data-theme="dark"] .btn-primary { color: #000; }
-  .btn-primary:hover { opacity: .85; }
-  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-ghost:disabled { opacity: .4; cursor: default; }
+  /* TABLE VIEW */
+  .table-view{flex:1;display:flex;flex-direction:column;overflow:hidden}
+  .table-view.hidden{display:none}
 
-  /* ── CONTENT AREA ── */
-  .content-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  /* DESCRIPTION */
+  .description-box{margin:12px 16px 0;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;font-size:13px;color:var(--text-muted);line-height:1.6;white-space:pre-wrap}
+  .description-box.hidden{display:none}
 
-  /* ── WELCOME (no table selected) ── */
-  .welcome {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    transition: all .3s;
-  }
-  .welcome.hidden { display: none; }
-  .welcome-inner {
-    max-width: 560px;
-    text-align: center;
-  }
-  .welcome-title {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--accent);
-    margin-bottom: 16px;
-    letter-spacing: .04em;
-  }
-  .welcome-desc {
-    font-size: 14px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    white-space: pre-wrap;
-  }
+  /* TABLE WRAP */
+  .table-wrap{flex:1;overflow:auto;margin-top:12px;position:relative}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead{position:sticky;top:0;z-index:10;background:var(--th-bg)}
 
-  /* ── TABLE VIEW ── */
-  .table-view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .table-view.hidden { display: none; }
+  /* TH */
+  th{padding:0;border-bottom:1px solid var(--border);white-space:nowrap;user-select:none;background:var(--th-bg)}
+  .th-inner{display:flex;align-items:stretch;height:100%}
+  .th-label{flex:1;display:flex;align-items:center;gap:5px;padding:9px 8px 9px 14px;cursor:pointer;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;transition:color .1s}
+  .th-label:hover{color:var(--accent)}
+  .th-label.sort-asc .arr-up,.th-label.sort-desc .arr-down{color:var(--accent)}
+  .sort-arrows{display:flex;flex-direction:column;gap:1px;opacity:.25}
+  .th-label:hover .sort-arrows,.th-label.sort-asc .sort-arrows,.th-label.sort-desc .sort-arrows{opacity:1}
+  .arr{font-size:8px;line-height:1}
 
-  /* ── DESCRIPTION BOX ── */
-  .description-box {
-    margin: 12px 16px 0;
-    padding: 10px 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 6px;
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    white-space: pre-wrap;
-  }
-  .description-box.hidden { display: none; }
+  /* FILTER BUTTON in header */
+  .th-filter-btn{display:flex;align-items:center;justify-content:center;padding:0 8px;cursor:pointer;color:var(--text-muted);font-size:11px;border-left:1px solid var(--border);transition:all .15s;min-width:24px}
+  .th-filter-btn:hover{color:var(--accent);background:var(--surface2)}
+  .th-filter-btn.active{color:var(--accent);background:var(--accent-dim)}
 
-  /* ── TABLE ── */
-  .table-wrap { flex: 1; overflow: auto; margin-top: 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  thead { position: sticky; top: 0; z-index: 10; background: var(--th-bg); }
-  th {
-    padding: 9px 14px;
-    text-align: left;
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-    cursor: pointer;
-    user-select: none;
-  }
-  th:hover { color: var(--accent); }
-  .th-inner { display: flex; align-items: center; gap: 5px; }
-  .sort-arrows { display: flex; flex-direction: column; gap: 1px; opacity: .25; }
-  .sort-arrows .arr { font-size: 8px; line-height: 1; }
-  th.sort-asc  .sort-arrows { opacity: 1; }
-  th.sort-asc  .arr-up   { color: var(--accent); }
-  th.sort-desc .sort-arrows { opacity: 1; }
-  th.sort-desc .arr-down { color: var(--accent); }
+  td{padding:7px 14px;border-bottom:1px solid var(--row-border);color:var(--text);max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);font-size:12px}
+  tr:hover td{background:var(--row-hover)}
 
-  td { padding: 7px 14px; border-bottom: 1px solid var(--row-border); color: var(--text); max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); font-size: 12px; }
-  tr:hover td { background: var(--row-hover); }
+  /* SUMS ROW */
+  tfoot td{padding:7px 14px;border-top:2px solid var(--border);font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);background:var(--th-bg);white-space:nowrap}
 
-  /* ── PAGINATION ── */
-  .pagination { padding: 8px 16px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-muted); background: var(--surface); flex-wrap: wrap; }
-  .pagination .sep { flex: 1; }
-  .page-info { color: var(--text); }
+  /* FILTER POPUP */
+  .filter-popup{position:fixed;z-index:1000;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);width:240px;max-height:380px;display:flex;flex-direction:column;overflow:hidden}
+  .filter-popup.hidden{display:none}
+  .fp-header{padding:10px 12px 8px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+  .fp-title{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em}
+  .fp-search{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:5px;font-family:var(--mono);font-size:12px;outline:none}
+  .fp-search:focus{border-color:var(--accent)}
+  .fp-select-all{display:flex;align-items:center;gap:6px;padding:6px 12px;font-family:var(--mono);font-size:11px;color:var(--text-muted);border-bottom:1px solid var(--border);cursor:pointer}
+  .fp-select-all:hover{background:var(--surface2)}
+  .fp-list{overflow-y:auto;flex:1}
+  .fp-item{display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;transition:background .1s}
+  .fp-item:hover{background:var(--surface2)}
+  .fp-item input[type=checkbox]{accent-color:var(--accent);cursor:pointer;width:13px;height:13px;flex-shrink:0}
+  .fp-item label{font-family:var(--mono);font-size:12px;color:var(--text);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .fp-footer{padding:8px 12px;border-top:1px solid var(--border);display:flex;gap:6px}
+  .fp-not-filterable{padding:12px;font-family:var(--mono);font-size:12px;color:var(--text-muted);text-align:center}
 
-  /* ── STATES ── */
-  .state-box { display: flex; align-items: center; justify-content: center; height: 200px; flex-direction: column; gap: 12px; color: var(--text-muted); font-family: var(--mono); font-size: 13px; }
-  .state-icon { font-size: 32px; }
-  .error-text { color: var(--danger); font-size: 12px; max-width: 400px; text-align: center; }
-  .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  /* PAGINATION */
+  .pagination{padding:8px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--text-muted);background:var(--surface);flex-wrap:wrap}
+  .pagination .sep{flex:1}
+  .page-info{color:var(--text)}
 
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+  /* STATES */
+  .state-box{display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:12px;color:var(--text-muted);font-family:var(--mono);font-size:13px}
+  .state-icon{font-size:32px}
+  .error-text{color:var(--danger);font-size:12px;max-width:400px;text-align:center}
+  .spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:3px}
 </style>
 </head>
 <body>
@@ -264,25 +169,29 @@
 <div class="layout">
   <aside>
     <div class="sidebar-header" id="sidebarHeader">Таблиці</div>
-    <div id="tableList"><div class="sidebar-loading" id="sidebarLoading">Завантаження...</div></div>
+    <div id="tableList"><div class="sidebar-loading">Завантаження...</div></div>
   </aside>
 
   <main>
     <div class="toolbar">
-      <div class="toolbar-title" id="toolbarTitle">←</div>
+      <div class="toolbar-title" id="toolbarTitle">← Оберіть таблицю</div>
       <input type="text" id="searchInput" placeholder="Пошук..." disabled>
-      <select id="columnSelect" disabled><option value="" data-uk="Всі колонки" data-en="All columns">Всі колонки</option></select>
-      <button class="btn btn-primary" id="searchBtn" disabled data-uk="Знайти" data-en="Search">Знайти</button>
-      <button class="btn btn-ghost"   id="resetBtn"  disabled data-uk="Скинути фільтри" data-en="Reset filters">Скинути фільтри</button>
+      <select id="columnSelect" disabled><option value="">Всі колонки</option></select>
+      <button class="btn btn-primary" id="searchBtn" disabled>Знайти</button>
+      <button class="btn btn-ghost"   id="resetBtn"  disabled>Скинути фільтри</button>
       <select id="pageSizeSelect">
-        <option value="100"   selected data-uk="100 рядків"     data-en="100 rows">100 рядків</option>
-        <option value="1000"           data-uk="1 000 рядків"   data-en="1 000 rows">1 000 рядків</option>
-        <option value="10000"          data-uk="10 000 рядків"  data-en="10 000 rows">10 000 рядків</option>
+        <option value="100" selected>100 рядків</option>
+        <option value="1000">1 000 рядків</option>
+        <option value="10000">10 000 рядків</option>
       </select>
     </div>
 
+    <!-- Active filters bar -->
+    <div class="filters-bar hidden" id="filtersBar">
+      <span class="filters-label" id="filtersLabel">Фільтри:</span>
+    </div>
+
     <div class="content-area">
-      <!-- Welcome screen -->
       <div class="welcome" id="welcomeBox">
         <div class="welcome-inner">
           <div class="welcome-title" id="welcomeTitle">НСЗУ — Відкриті дані</div>
@@ -290,19 +199,35 @@
         </div>
       </div>
 
-      <!-- Table view -->
       <div class="table-view hidden" id="tableView">
         <div class="description-box hidden" id="descriptionBox"></div>
         <div class="table-wrap" id="tableWrap"></div>
         <div class="pagination" id="pagination" style="display:none">
-          <button class="btn btn-ghost" id="prevBtn" data-uk="← Назад" data-en="← Prev">← Назад</button>
-          <button class="btn btn-ghost" id="nextBtn" data-uk="Вперед →" data-en="Next →">Вперед →</button>
+          <button class="btn btn-ghost" id="prevBtn">← Назад</button>
+          <button class="btn btn-ghost" id="nextBtn">Вперед →</button>
           <div class="sep"></div>
           <div class="page-info" id="pageInfo"></div>
         </div>
       </div>
     </div>
   </main>
+</div>
+
+<!-- Filter popup -->
+<div class="filter-popup hidden" id="filterPopup">
+  <div class="fp-header">
+    <div class="fp-title" id="fpTitle">Фільтр</div>
+    <input class="fp-search" id="fpSearch" placeholder="Пошук значень...">
+  </div>
+  <div class="fp-select-all" id="fpSelectAll">
+    <input type="checkbox" id="fpSelectAllCb"> <label for="fpSelectAllCb" id="fpSelectAllLabel">Вибрати всі</label>
+  </div>
+  <div class="fp-list" id="fpList"></div>
+  <div class="fp-footer">
+    <button class="btn btn-primary" id="fpApply" style="flex:1">Застосувати</button>
+    <button class="btn btn-ghost"   id="fpClear">Очистити</button>
+    <button class="btn btn-ghost"   id="fpClose">✕</button>
+  </div>
 </div>
 
 <script>
@@ -314,382 +239,484 @@ let currentTable  = null;
 let currentPage   = 1;
 let totalPages    = 1;
 let currentSearch = "";
-let currentColumn = "";
+let currentSearchCol = "";
 let currentSort   = { by: null, dir: "asc" };
-let lang          = "uk";   // "uk" | "en"
+let colFilters    = {};   // { colName: Set of selected values }
+let lastData      = null;
+let lastSums      = {};
+let lang          = "uk";
 let isDark        = false;
+
+// Filter popup state
+let fpColumn      = null;
+let fpAllValues   = [];
+let fpSelected    = new Set();
 
 // ── I18N ─────────────────────────────────────────────────────────────────────
 const UI = {
   uk: {
-    subtitle:      "Відкриті дані",
-    sidebarHeader: "Таблиці",
-    loading:       "Завантаження...",
-    loadError:     "Помилка завантаження",
-    online:        "онлайн",
-    offline:       "недоступний",
-    connecting:    "з'єднання...",
-    selectPrompt:  "← Оберіть таблицю",
-    noResults:     "Нічого не знайдено",
-    searching:     "Завантаження...",
-    pageInfo:      (f, t, total, p, tp) => `${f}–${t} з ${total} · стор. ${p} / ${tp}`,
+    subtitle:"Відкриті дані", sidebarHeader:"Таблиці", loading:"Завантаження...",
+    loadError:"Помилка завантаження", online:"онлайн", offline:"недоступний",
+    connecting:"з'єднання...", selectPrompt:"← Оберіть таблицю",
+    noResults:"Нічого не знайдено", filtersLabel:"Фільтри:",
+    selectAll:"Вибрати всі", apply:"Застосувати", clear:"Очистити",
+    notFilterable:"Більше 100 унікальних значень — фільтр недоступний",
+    pageInfo:(f,t,tot,p,tp)=>`${f}–${t} з ${tot} · стор. ${p} / ${tp}`,
+    rows:"рядків", updated:"оновлено",
   },
   en: {
-    subtitle:      "Open Data",
-    sidebarHeader: "Tables",
-    loading:       "Loading...",
-    loadError:     "Failed to load",
-    online:        "online",
-    offline:       "unavailable",
-    connecting:    "connecting...",
-    selectPrompt:  "← Select a table",
-    noResults:     "No results found",
-    searching:     "Loading...",
-    pageInfo:      (f, t, total, p, tp) => `${f}–${t} of ${total} · page ${p} / ${tp}`,
+    subtitle:"Open Data", sidebarHeader:"Tables", loading:"Loading...",
+    loadError:"Failed to load", online:"online", offline:"unavailable",
+    connecting:"connecting...", selectPrompt:"← Select a table",
+    noResults:"No results found", filtersLabel:"Filters:",
+    selectAll:"Select all", apply:"Apply", clear:"Clear",
+    notFilterable:"More than 100 unique values — filter unavailable",
+    pageInfo:(f,t,tot,p,tp)=>`${f}–${t} of ${tot} · page ${p} / ${tp}`,
+    rows:"rows", updated:"updated",
   },
 };
+const t = (k,...a) => { const v=UI[lang][k]; return typeof v==="function"?v(...a):v; };
 
-function t(key, ...args) {
-  const fn = UI[lang][key];
-  return typeof fn === "function" ? fn(...args) : fn;
-}
-
-// ── HELPERS ───────────────────────────────────────────────────────────────────
+// ── CONFIG helpers ────────────────────────────────────────────────────────────
 const CFG = () => window.SITE_CONFIG || {};
 
-// Парсить назву таблиці -> { code, slug, date }
-// latest_573546_2026_03_09_active_declarations_by_age_gender
-// -> { code:"573546", slug:"active_declarations_by_age_gender", date:"2026-03-09" }
 function parseTableName(name) {
   const s = name.replace(/^latest_/, "");
   const parts = s.split("_");
   const code = parts[0];
-
-  const dateIdx = parts.findIndex((p, i) => i > 0 && /^\d{4}$/.test(p) && parts[i+1] && /^\d{2}$/.test(parts[i+1]));
-  let date = null;
-  let slugStart = 1;
-  if (dateIdx !== -1) {
-    date = `${parts[dateIdx]}-${parts[dateIdx+1]}-${parts[dateIdx+2]}`;
-    slugStart = dateIdx + 3;
-  }
+  const dateIdx = parts.findIndex((p,i)=>i>0&&/^\d{4}$/.test(p)&&parts[i+1]&&/^\d{2}$/.test(parts[i+1]));
+  let date=null, slugStart=1;
+  if (dateIdx!==-1) { date=`${parts[dateIdx]}-${parts[dateIdx+1]}-${parts[dateIdx+2]}`; slugStart=dateIdx+3; }
   const slug = parts.slice(slugStart).join("_");
-  return { code, slug, date, key: slug ? `${code}_${slug}` : code };
+  return { code, slug, date, key: slug?`${code}_${slug}`:code };
 }
-
-function getTableConfig(name) {
-  const { key } = parseTableName(name);
-  return (CFG().tables || {})[key] || null;
-}
-
+function getTableConfig(name) { const {key}=parseTableName(name); return (CFG().tables||{})[key]||null; }
 function getLabel(name) {
-  const cfg = getTableConfig(name);
-  if (!cfg) {
-    const { slug } = parseTableName(name);
-    return slug.replace(/_/g, " ");
-  }
-  return (lang === "en" && cfg.label_en) ? cfg.label_en : (cfg.label_uk || parseTableName(name).slug.replace(/_/g, " "));
+  const cfg=getTableConfig(name);
+  if (!cfg) { const {slug}=parseTableName(name); return slug.replace(/_/g," "); }
+  return (lang==="en"&&cfg.label_en)?cfg.label_en:(cfg.label_uk||parseTableName(name).slug.replace(/_/g," "));
 }
-
 function getDesc(name) {
-  const cfg = getTableConfig(name);
-  if (!cfg) return "";
-  return (lang === "en" && cfg.desc_en) ? cfg.desc_en : (cfg.desc_uk || "");
+  const cfg=getTableConfig(name); if (!cfg) return "";
+  return (lang==="en"&&cfg.desc_en)?cfg.desc_en:(cfg.desc_uk||"");
 }
-
 function getColLabel(tableName, colName) {
-  const cfg = getTableConfig(tableName);
-  if (!cfg || !cfg.columns || !cfg.columns[colName]) return colName;
-  const map = cfg.columns[colName];
-  return (lang === "en" && map.en) ? map.en : (map.uk || colName);
+  const cfg=getTableConfig(tableName);
+  if (!cfg||!cfg.columns||!cfg.columns[colName]) return colName;
+  const m=cfg.columns[colName];
+  return (lang==="en"&&m.en)?m.en:(m.uk||colName);
 }
-
-function isHidden(name) {
-  const cfg = getTableConfig(name);
-  return cfg && cfg.hidden === true;
-}
-
+function isHidden(name) { const cfg=getTableConfig(name); return cfg&&cfg.hidden===true; }
 function esc(v) {
-  if (v === null || v === undefined) return "";
+  if (v===null||v===undefined) return "";
   return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
-// ── APPLY LANG ────────────────────────────────────────────────────────────────
-function applyLang() {
-  document.getElementById("hdrSubtitle").textContent    = t("subtitle");
-  document.getElementById("sidebarHeader").textContent  = t("sidebarHeader");
-
-  // Кнопки з data-uk/data-en
-  document.querySelectorAll("[data-uk]").forEach(el => {
-    el.textContent = lang === "en" ? el.dataset.en : el.dataset.uk;
-  });
-
-  // Welcome
-  const siteDesc = lang === "en" ? CFG().site_desc_en : CFG().site_desc_uk;
-  document.getElementById("welcomeDesc").textContent = siteDesc || "";
-
-  // Toolbar title
-  if (!currentTable) {
-    document.getElementById("toolbarTitle").textContent = t("selectPrompt");
-  } else {
-    const { date } = parseTableName(currentTable);
-    const datePart = date ? ` · ${date}` : "";
-    document.getElementById("toolbarTitle").textContent = getLabel(currentTable) + datePart;
-  }
-
-  // Description
-  if (currentTable) {
-    const desc = getDesc(currentTable);
-    const descEl = document.getElementById("descriptionBox");
-    descEl.textContent = desc;
-    descEl.classList.toggle("hidden", !desc);
-  }
-
-  // Re-render table headers if table is open (to update column labels)
-  if (currentTable && lastData) renderTable(lastData);
-}
-
 // ── THEME ─────────────────────────────────────────────────────────────────────
-document.getElementById("themeToggle").addEventListener("click", () => {
-  isDark = !isDark;
-  document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-  document.getElementById("themeToggle").textContent = isDark ? "🌙" : "☀️";
+document.getElementById("themeToggle").addEventListener("click",()=>{
+  isDark=!isDark;
+  document.documentElement.setAttribute("data-theme",isDark?"dark":"light");
+  document.getElementById("themeToggle").textContent=isDark?"🌙":"☀️";
 });
 
-// ── LANG TOGGLE ───────────────────────────────────────────────────────────────
-document.getElementById("langToggle").addEventListener("click", () => {
-  lang = lang === "uk" ? "en" : "uk";
-  document.getElementById("langToggle").textContent = lang === "uk" ? "EN" : "УК";
-  document.getElementById("langToggle").classList.toggle("active", lang === "en");
+// ── LANG ──────────────────────────────────────────────────────────────────────
+document.getElementById("langToggle").addEventListener("click",()=>{
+  lang=lang==="uk"?"en":"uk";
+  document.getElementById("langToggle").textContent=lang==="uk"?"EN":"УК";
+  document.getElementById("langToggle").classList.toggle("active",lang==="en");
   applyLang();
-  // Reload sidebar labels
   loadTableList();
 });
 
+function applyLang() {
+  document.getElementById("hdrSubtitle").textContent=t("subtitle");
+  document.getElementById("sidebarHeader").textContent=t("sidebarHeader");
+  document.getElementById("filtersLabel").textContent=t("filtersLabel");
+  document.getElementById("welcomeDesc").textContent=(lang==="en"?CFG().site_desc_en:CFG().site_desc_uk)||"";
+  if (!currentTable) document.getElementById("toolbarTitle").textContent=t("selectPrompt");
+  else {
+    const {date}=parseTableName(currentTable);
+    document.getElementById("toolbarTitle").textContent=getLabel(currentTable)+(date?` · ${date}`:"");
+    const desc=getDesc(currentTable);
+    const el=document.getElementById("descriptionBox");
+    el.textContent=desc; el.classList.toggle("hidden",!desc);
+  }
+  if (lastData) renderTable(lastData);
+  renderFiltersBar();
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 async function init() {
-  document.getElementById("statusLabel").textContent = t("connecting");
-
-  // Welcome desc
-  const siteDesc = CFG().site_desc_uk || "";
-  document.getElementById("welcomeDesc").textContent = siteDesc;
-
+  document.getElementById("statusLabel").textContent=t("connecting");
+  document.getElementById("welcomeDesc").textContent=(CFG().site_desc_uk||"");
   try {
     await fetch(`${API}/health`);
-    document.getElementById("statusDot").style.background = "var(--accent)";
-    document.getElementById("statusLabel").textContent = t("online");
+    document.getElementById("statusDot").style.background="var(--accent)";
+    document.getElementById("statusLabel").textContent=t("online");
   } catch {
-    document.getElementById("statusDot").style.background = "var(--danger)";
-    document.getElementById("statusLabel").textContent = t("offline");
+    document.getElementById("statusDot").style.background="var(--danger)";
+    document.getElementById("statusLabel").textContent=t("offline");
   }
   await loadTableList();
 }
 
 // ── TABLE LIST ────────────────────────────────────────────────────────────────
 async function loadTableList() {
-  const el = document.getElementById("tableList");
-  el.innerHTML = `<div class="sidebar-loading">${t("loading")}</div>`;
+  const el=document.getElementById("tableList");
+  el.innerHTML=`<div class="sidebar-loading">${t("loading")}</div>`;
   try {
-    const r = await fetch(`${API}/tables`);
-    const data = await r.json();
-    el.innerHTML = "";
-    data.tables.forEach(t_item => {
-      if (isHidden(t_item.name)) return;
-      const label = getLabel(t_item.name);
-      const { date } = parseTableName(t_item.name);
-      const datePart = date ? `оновлено ${date}` : "";
-      const rowsPart = t_item.rows !== null ? `${t_item.rows.toLocaleString("uk")} ${lang === "en" ? "rows" : "рядків"}` : "";
-      const meta = [datePart, rowsPart].filter(Boolean).join(" · ");
-
-      const div = document.createElement("div");
-      div.className = "table-item" + (currentTable === t_item.name ? " active" : "");
-      div.dataset.name = t_item.name;
-      div.innerHTML = `<div class="table-name">${esc(label)}</div><div class="table-meta">${esc(meta)}</div>`;
-      div.addEventListener("click", () => selectTable(t_item.name));
+    const r=await fetch(`${API}/tables`);
+    const data=await r.json();
+    el.innerHTML="";
+    data.tables.forEach(item=>{
+      if (isHidden(item.name)) return;
+      const {date}=parseTableName(item.name);
+      const meta=[date?`${t("updated")} ${date}`:"", item.rows!=null?`${item.rows.toLocaleString("uk")} ${t("rows")}`:""].filter(Boolean).join(" · ");
+      const div=document.createElement("div");
+      div.className="table-item"+(currentTable===item.name?" active":"");
+      div.dataset.name=item.name;
+      div.innerHTML=`<div class="table-name">${esc(getLabel(item.name))}</div><div class="table-meta">${esc(meta)}</div>`;
+      div.addEventListener("click",()=>selectTable(item.name));
       el.appendChild(div);
     });
   } catch {
-    el.innerHTML = `<div class="sidebar-loading" style="color:var(--danger)">${t("loadError")}</div>`;
+    el.innerHTML=`<div class="sidebar-loading" style="color:var(--danger)">${t("loadError")}</div>`;
   }
 }
 
 // ── SELECT TABLE ──────────────────────────────────────────────────────────────
 function selectTable(name) {
-  currentTable  = name;
-  currentPage   = 1;
-  currentSearch = "";
-  currentColumn = "";
-  currentSort   = { by: null, dir: "asc" };
-
-  document.querySelectorAll(".table-item").forEach(el =>
-    el.classList.toggle("active", el.dataset.name === name)
-  );
-
-  // Switch welcome -> table view
+  currentTable=name; currentPage=1; currentSearch=""; currentSearchCol="";
+  currentSort={by:null,dir:"asc"}; colFilters={}; lastSums={};
+  document.querySelectorAll(".table-item").forEach(el=>el.classList.toggle("active",el.dataset.name===name));
   document.getElementById("welcomeBox").classList.add("hidden");
   document.getElementById("tableView").classList.remove("hidden");
-
-  const { date } = parseTableName(name);
-  const datePart = date ? ` · ${date}` : "";
-  document.getElementById("toolbarTitle").textContent = getLabel(name) + datePart;
-
-  const desc = getDesc(name);
-  const descEl = document.getElementById("descriptionBox");
-  descEl.textContent = desc;
-  descEl.classList.toggle("hidden", !desc);
-
-  document.getElementById("searchInput").value = "";
-  document.getElementById("searchInput").disabled = false;
-  document.getElementById("searchBtn").disabled = false;
-  document.getElementById("resetBtn").disabled = false;
-
+  const {date}=parseTableName(name);
+  document.getElementById("toolbarTitle").textContent=getLabel(name)+(date?` · ${date}`:"");
+  const desc=getDesc(name);
+  const descEl=document.getElementById("descriptionBox");
+  descEl.textContent=desc; descEl.classList.toggle("hidden",!desc);
+  document.getElementById("searchInput").value="";
+  document.getElementById("searchInput").disabled=false;
+  document.getElementById("searchBtn").disabled=false;
+  document.getElementById("resetBtn").disabled=false;
+  renderFiltersBar();
   loadData();
 }
 
-// ── LAST DATA (for lang re-render) ───────────────────────────────────────────
-let lastData = null;
+// ── FILTERS ───────────────────────────────────────────────────────────────────
+function filtersToJSON() {
+  const out={};
+  for (const [col,vals] of Object.entries(colFilters)) {
+    if (vals.size>0) out[col]=[...vals];
+  }
+  return Object.keys(out).length?JSON.stringify(out):null;
+}
+
+function renderFiltersBar() {
+  const bar=document.getElementById("filtersBar");
+  // Remove old tags
+  bar.querySelectorAll(".filter-tag").forEach(e=>e.remove());
+  const active=Object.entries(colFilters).filter(([,v])=>v.size>0);
+  bar.classList.toggle("hidden", active.length===0);
+  active.forEach(([col,vals])=>{
+    const tag=document.createElement("div");
+    tag.className="filter-tag";
+    const label=lastData?getColLabel(currentTable,col):col;
+    tag.innerHTML=`<span>${esc(label)}: ${esc([...vals].slice(0,3).join(", "))}${vals.size>3?` +${vals.size-3}`:""})</span><span class="remove" data-col="${esc(col)}">×</span>`;
+    tag.querySelector(".remove").addEventListener("click",e=>{
+      const c=e.target.dataset.col;
+      delete colFilters[c];
+      currentPage=1;
+      renderFiltersBar();
+      loadData();
+    });
+    bar.appendChild(tag);
+  });
+}
 
 // ── LOAD DATA ─────────────────────────────────────────────────────────────────
 async function loadData() {
   if (!currentTable) return;
   showLoading();
-
-  const pageSize = document.getElementById("pageSizeSelect").value;
-  const params = new URLSearchParams({ page: currentPage, page_size: pageSize });
-  if (currentSearch) params.set("search", currentSearch);
-  if (currentColumn) params.set("column", currentColumn);
-  if (currentSort.by) {
-    params.set("sort_by", currentSort.by);
-    params.set("sort_dir", currentSort.dir);
-  }
+  const pageSize=document.getElementById("pageSizeSelect").value;
+  const params=new URLSearchParams({page:currentPage,page_size:pageSize});
+  if (currentSearch) params.set("search",currentSearch);
+  if (currentSearchCol) params.set("search_column",currentSearchCol);
+  if (currentSort.by) { params.set("sort_by",currentSort.by); params.set("sort_dir",currentSort.dir); }
+  const f=filtersToJSON();
+  if (f) params.set("filters",f);
 
   try {
-    const r = await fetch(`${API}/table/${currentTable}?${params}`);
+    const r=await fetch(`${API}/table/${currentTable}?${params}`);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const data = await r.json();
-    lastData   = data;
-    totalPages = data.total_pages;
+    const data=await r.json();
+    lastData=data; totalPages=data.total_pages;
+    // Load sums in parallel
+    loadSums(f);
     renderTable(data);
     updateColumnSelect(data.columns);
     updatePagination(data);
-  } catch(e) {
-    showError(e.message);
-  }
+  } catch(e) { showError(e.message); }
+}
+
+async function loadSums(filtersJSON) {
+  if (!currentTable) return;
+  const params=new URLSearchParams();
+  if (filtersJSON) params.set("filters",filtersJSON);
+  try {
+    const r=await fetch(`${API}/table/${currentTable}/sums?${params}`);
+    const data=await r.json();
+    lastSums=data.sums||{};
+    // Update tfoot if table is rendered
+    updateSumsRow();
+  } catch { lastSums={}; }
 }
 
 // ── RENDER TABLE ──────────────────────────────────────────────────────────────
 function renderTable(data) {
-  const wrap = document.getElementById("tableWrap");
-
+  const wrap=document.getElementById("tableWrap");
   if (!data.rows.length) {
-    wrap.innerHTML = `<div class="state-box"><div class="state-icon">🔍</div><div>${t("noResults")}</div></div>`;
+    wrap.innerHTML=`<div class="state-box"><div class="state-icon">🔍</div><div>${t("noResults")}</div></div>`;
     return;
   }
 
-  const ths = data.columns.map(c => {
-    const label = getColLabel(currentTable, c);
-    let cls = "";
-    if (currentSort.by === c) cls = currentSort.dir === "asc" ? "sort-asc" : "sort-desc";
-    return `<th class="${cls}" data-col="${esc(c)}" title="${esc(c)}">
+  const ths=data.columns.map(c=>{
+    const label=getColLabel(currentTable,c);
+    const sortCls=currentSort.by===c?(currentSort.dir==="asc"?"sort-asc":"sort-desc"):"";
+    const filterActive=(colFilters[c]&&colFilters[c].size>0)?"active":"";
+    return `<th>
       <div class="th-inner">
-        <span>${esc(label)}</span>
-        <span class="sort-arrows"><span class="arr arr-up">▲</span><span class="arr arr-down">▼</span></span>
+        <div class="th-label ${sortCls}" data-col="${esc(c)}">
+          <span>${esc(label)}</span>
+          <span class="sort-arrows"><span class="arr arr-up">▲</span><span class="arr arr-down">▼</span></span>
+        </div>
+        <div class="th-filter-btn ${filterActive}" data-col="${esc(c)}" title="Фільтр">▾</div>
       </div>
     </th>`;
   }).join("");
 
-  const trs = data.rows.map(row =>
-    `<tr>${row.map(cell => `<td title="${esc(cell)}">${esc(cell)}</td>`).join("")}</tr>`
+  const trs=data.rows.map(row=>
+    `<tr>${row.map(cell=>`<td title="${esc(cell)}">${esc(cell)}</td>`).join("")}</tr>`
   ).join("");
 
-  wrap.innerHTML = `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+  // Tfoot for sums
+  const tfootCells=data.columns.map(c=>{
+    const v=lastSums[c];
+    if (v==null) return `<td></td>`;
+    return `<td>${formatNum(v)}</td>`;
+  }).join("");
 
-  wrap.querySelectorAll("th").forEach(th => {
-    th.addEventListener("click", () => {
-      const col = th.dataset.col;
-      currentSort.by  = col;
-      currentSort.dir = (currentSort.by === col && currentSort.dir === "asc") ? "desc" : "asc";
-      // fix: set by first, then toggle
-      if (th.classList.contains("sort-asc")) {
-        currentSort.dir = "desc";
-      } else if (th.classList.contains("sort-desc")) {
-        currentSort.dir = "asc";
-      } else {
-        currentSort.dir = "asc";
-      }
-      currentSort.by = col;
-      currentPage = 1;
-      loadData();
+  wrap.innerHTML=`<table>
+    <thead><tr>${ths}</tr></thead>
+    <tbody>${trs}</tbody>
+    <tfoot id="sumsRow"><tr>${tfootCells}</tr></tfoot>
+  </table>`;
+
+  // Sort click
+  wrap.querySelectorAll(".th-label").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const col=el.dataset.col;
+      if (currentSort.by===col) currentSort.dir=currentSort.dir==="asc"?"desc":"asc";
+      else { currentSort.by=col; currentSort.dir="asc"; }
+      currentPage=1; loadData();
     });
   });
+
+  // Filter btn click
+  wrap.querySelectorAll(".th-filter-btn").forEach(el=>{
+    el.addEventListener("click",(e)=>{ e.stopPropagation(); openFilterPopup(el.dataset.col, el); });
+  });
+}
+
+function updateSumsRow() {
+  const row=document.getElementById("sumsRow");
+  if (!row||!lastData) return;
+  const cells=lastData.columns.map(c=>{
+    const v=lastSums[c];
+    return `<td>${v!=null?formatNum(v):""}</td>`;
+  }).join("");
+  row.innerHTML=`<tr>${cells}</tr>`;
+}
+
+function formatNum(v) {
+  if (v===null||v===undefined) return "";
+  const n=Number(v);
+  if (isNaN(n)) return String(v);
+  // If integer-like
+  if (Number.isInteger(n)||Math.abs(n-Math.round(n))<0.0001) return Math.round(n).toLocaleString("uk");
+  return n.toLocaleString("uk",{maximumFractionDigits:2});
 }
 
 // ── COLUMN SELECT ─────────────────────────────────────────────────────────────
 function updateColumnSelect(columns) {
-  const sel = document.getElementById("columnSelect");
-  sel.disabled = false;
-  const prev = sel.value;
-  const allLabel = lang === "en" ? "All columns" : "Всі колонки";
-  sel.innerHTML = `<option value="">${allLabel}</option>` +
-    columns.map(c => {
-      const label = getColLabel(currentTable, c);
-      return `<option value="${esc(c)}" ${c === prev ? "selected" : ""}>${esc(label)}</option>`;
-    }).join("");
+  const sel=document.getElementById("columnSelect");
+  sel.disabled=false;
+  const prev=sel.value;
+  const allLabel=lang==="en"?"All columns":"Всі колонки";
+  sel.innerHTML=`<option value="">${allLabel}</option>`+
+    columns.map(c=>`<option value="${esc(c)}" ${c===prev?"selected":""}>${esc(getColLabel(currentTable,c))}</option>`).join("");
 }
 
 // ── PAGINATION ────────────────────────────────────────────────────────────────
 function updatePagination(data) {
-  const pg = document.getElementById("pagination");
-  pg.style.display = "flex";
-  const from = ((data.page - 1) * data.page_size + 1).toLocaleString("uk");
-  const to   = Math.min(data.page * data.page_size, data.total_rows).toLocaleString("uk");
-  const total = data.total_rows.toLocaleString("uk");
-  document.getElementById("pageInfo").textContent =
-    t("pageInfo", from, to, total, data.page, data.total_pages);
-  document.getElementById("prevBtn").disabled = data.page <= 1;
-  document.getElementById("nextBtn").disabled = data.page >= data.total_pages;
+  const pg=document.getElementById("pagination");
+  pg.style.display="flex";
+  const from=((data.page-1)*data.page_size+1).toLocaleString("uk");
+  const to=Math.min(data.page*data.page_size,data.total_rows).toLocaleString("uk");
+  const tot=data.total_rows.toLocaleString("uk");
+  document.getElementById("pageInfo").textContent=t("pageInfo",from,to,tot,data.page,data.total_pages);
+  document.getElementById("prevBtn").disabled=data.page<=1;
+  document.getElementById("nextBtn").disabled=data.page>=data.total_pages;
 }
+
+// ── FILTER POPUP ──────────────────────────────────────────────────────────────
+async function openFilterPopup(col, anchorEl) {
+  fpColumn=col;
+  const popup=document.getElementById("filterPopup");
+
+  // Position near button
+  const rect=anchorEl.getBoundingClientRect();
+  popup.style.top=(rect.bottom+4)+"px";
+  let left=rect.left;
+  if (left+240>window.innerWidth) left=window.innerWidth-248;
+  popup.style.left=left+"px";
+
+  const title=lastData?getColLabel(currentTable,col):col;
+  document.getElementById("fpTitle").textContent=title;
+  document.getElementById("fpSearch").value="";
+  document.getElementById("fpList").innerHTML=`<div class="fp-not-filterable">${t("loading")}</div>`;
+  popup.classList.remove("hidden");
+
+  // Load values
+  try {
+    const r=await fetch(`${API}/table/${currentTable}/values/${encodeURIComponent(col)}`);
+    const data=await r.json();
+    if (!data.filterable) {
+      document.getElementById("fpList").innerHTML=`<div class="fp-not-filterable">${t("notFilterable")} (${data.count})</div>`;
+      document.getElementById("fpSelectAll").style.display="none";
+      document.getElementById("fpSearch").disabled=true;
+      return;
+    }
+    document.getElementById("fpSelectAll").style.display="flex";
+    document.getElementById("fpSearch").disabled=false;
+    fpAllValues=data.values;
+    // Current selection
+    fpSelected=colFilters[col]?new Set(colFilters[col]):new Set();
+    renderFpList(fpAllValues);
+  } catch(e) {
+    document.getElementById("fpList").innerHTML=`<div class="fp-not-filterable" style="color:var(--danger)">${e.message}</div>`;
+  }
+}
+
+function renderFpList(values) {
+  const list=document.getElementById("fpList");
+  if (!values.length) { list.innerHTML=`<div class="fp-not-filterable">—</div>`; return; }
+  list.innerHTML=values.map(v=>{
+    const checked=fpSelected.size===0||fpSelected.has(v)?"checked":"";
+    return `<div class="fp-item">
+      <input type="checkbox" id="fpc_${esc(v)}" value="${esc(v)}" ${checked}>
+      <label for="fpc_${esc(v)}">${esc(v===""?"(пусто)":v)}</label>
+    </div>`;
+  }).join("");
+  // Update select-all state
+  updateSelectAll();
+  list.querySelectorAll("input[type=checkbox]").forEach(cb=>{
+    cb.addEventListener("change",()=>{
+      if (cb.checked) fpSelected.add(cb.value); else fpSelected.delete(cb.value);
+      updateSelectAll();
+    });
+  });
+}
+
+function updateSelectAll() {
+  const cb=document.getElementById("fpSelectAllCb");
+  const all=document.getElementById("fpList").querySelectorAll("input[type=checkbox]");
+  const checked=[...all].filter(c=>c.checked).length;
+  cb.checked=checked===all.length;
+  cb.indeterminate=checked>0&&checked<all.length;
+}
+
+// fp search
+document.getElementById("fpSearch").addEventListener("input",e=>{
+  const q=e.target.value.toLowerCase();
+  const filtered=fpAllValues.filter(v=>v.toLowerCase().includes(q));
+  renderFpList(filtered);
+});
+
+// select all
+document.getElementById("fpSelectAllCb").addEventListener("change",e=>{
+  const all=document.getElementById("fpList").querySelectorAll("input[type=checkbox]");
+  all.forEach(cb=>{ cb.checked=e.target.checked; if(e.target.checked) fpSelected.add(cb.value); else fpSelected.delete(cb.value); });
+});
+
+// apply
+document.getElementById("fpApply").addEventListener("click",()=>{
+  // If all selected or none selected -> no filter
+  const allCbs=document.getElementById("fpList").querySelectorAll("input[type=checkbox]");
+  const checkedCbs=[...allCbs].filter(c=>c.checked);
+  if (checkedCbs.length===0||checkedCbs.length===allCbs.length) {
+    delete colFilters[fpColumn];
+  } else {
+    colFilters[fpColumn]=new Set(checkedCbs.map(c=>c.value));
+  }
+  closePopup();
+  currentPage=1;
+  renderFiltersBar();
+  loadData();
+});
+
+// clear
+document.getElementById("fpClear").addEventListener("click",()=>{
+  delete colFilters[fpColumn];
+  closePopup();
+  currentPage=1;
+  renderFiltersBar();
+  loadData();
+});
+
+// close
+document.getElementById("fpClose").addEventListener("click",closePopup);
+
+function closePopup() { document.getElementById("filterPopup").classList.add("hidden"); }
+
+// Close on outside click
+document.addEventListener("click",e=>{
+  const popup=document.getElementById("filterPopup");
+  if (!popup.classList.contains("hidden")&&!popup.contains(e.target)&&!e.target.classList.contains("th-filter-btn")) {
+    closePopup();
+  }
+});
 
 // ── STATES ────────────────────────────────────────────────────────────────────
 function showLoading() {
-  document.getElementById("tableWrap").innerHTML =
-    `<div class="state-box"><div class="spinner"></div><div>${t("searching")}</div></div>`;
-  document.getElementById("pagination").style.display = "none";
+  document.getElementById("tableWrap").innerHTML=`<div class="state-box"><div class="spinner"></div><div>${t("loading")}</div></div>`;
+  document.getElementById("pagination").style.display="none";
 }
 function showError(msg) {
-  document.getElementById("tableWrap").innerHTML =
-    `<div class="state-box"><div class="state-icon">⚠️</div><div class="error-text">${esc(msg)}</div></div>`;
-  document.getElementById("pagination").style.display = "none";
+  document.getElementById("tableWrap").innerHTML=`<div class="state-box"><div class="state-icon">⚠️</div><div class="error-text">${esc(msg)}</div></div>`;
+  document.getElementById("pagination").style.display="none";
 }
 
 // ── EVENTS ────────────────────────────────────────────────────────────────────
-document.getElementById("searchBtn").addEventListener("click", () => {
-  currentSearch = document.getElementById("searchInput").value.trim();
-  currentColumn = document.getElementById("columnSelect").value;
-  currentPage = 1;
-  loadData();
+document.getElementById("searchBtn").addEventListener("click",()=>{
+  currentSearch=document.getElementById("searchInput").value.trim();
+  currentSearchCol=document.getElementById("columnSelect").value;
+  currentPage=1; loadData();
 });
-document.getElementById("searchInput").addEventListener("keydown", e => {
-  if (e.key === "Enter") document.getElementById("searchBtn").click();
+document.getElementById("searchInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter") document.getElementById("searchBtn").click();
 });
-document.getElementById("resetBtn").addEventListener("click", () => {
-  currentSearch = "";
-  currentColumn = "";
-  currentSort   = { by: null, dir: "asc" };
-  currentPage   = 1;
-  document.getElementById("searchInput").value = "";
-  document.getElementById("columnSelect").value = "";
-  loadData();
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  currentSearch=""; currentSearchCol=""; currentSort={by:null,dir:"asc"};
+  colFilters={}; currentPage=1;
+  document.getElementById("searchInput").value="";
+  document.getElementById("columnSelect").value="";
+  renderFiltersBar(); loadData();
 });
-document.getElementById("prevBtn").addEventListener("click", () => {
-  if (currentPage > 1) { currentPage--; loadData(); }
-});
-document.getElementById("nextBtn").addEventListener("click", () => {
-  if (currentPage < totalPages) { currentPage++; loadData(); }
-});
-document.getElementById("pageSizeSelect").addEventListener("change", () => {
-  currentPage = 1;
-  loadData();
-});
+document.getElementById("prevBtn").addEventListener("click",()=>{ if(currentPage>1){currentPage--;loadData();} });
+document.getElementById("nextBtn").addEventListener("click",()=>{ if(currentPage<totalPages){currentPage++;loadData();} });
+document.getElementById("pageSizeSelect").addEventListener("change",()=>{ currentPage=1; loadData(); });
 
 init();
 </script>
