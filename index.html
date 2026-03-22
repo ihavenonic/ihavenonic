@@ -119,8 +119,9 @@
   tr:hover td{background:var(--row-hover)}
 
   /* SUMS ROW */
-  tfoot{position:sticky;bottom:0;z-index:10}
-  tfoot td{padding:7px 14px;border-top:2px solid var(--border);font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);background:var(--th-bg);white-space:nowrap}
+  .sums-bar{background:var(--th-bg);border-top:2px solid var(--border);overflow:hidden;flex-shrink:0}
+  .sums-bar table{width:100%;border-collapse:collapse}
+  .sums-bar td{padding:7px 14px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* FILTER POPUP */
   .filter-popup{position:fixed;z-index:1000;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);width:240px;max-height:380px;display:flex;flex-direction:column;overflow:hidden}
@@ -203,6 +204,7 @@
       <div class="table-view hidden" id="tableView">
         <div class="description-box hidden" id="descriptionBox"></div>
         <div class="table-wrap" id="tableWrap"></div>
+        <div class="sums-bar hidden" id="sumsBar"><table><tbody><tr id="sumsRow"></tr></tbody></table></div>
         <div class="pagination" id="pagination" style="display:none">
           <button class="btn btn-ghost" id="prevBtn">← Назад</button>
           <button class="btn btn-ghost" id="nextBtn">Вперед →</button>
@@ -502,13 +504,9 @@ function renderTable(data) {
     `<tr>${row.map(cell=>`<td title="${esc(cell)}">${esc(cell)}</td>`).join("")}</tr>`
   ).join("");
 
-  // Tfoot - render empty cells, fill after sums load
-  const tfootCells=data.columns.map(()=>`<td></td>`).join("");
-
   wrap.innerHTML=`<table>
     <thead><tr>${ths}</tr></thead>
     <tbody>${trs}</tbody>
-    <tfoot id="sumsRow"><tr>${tfootCells}</tr></tfoot>
   </table>`;
 
   // Sort click
@@ -528,22 +526,30 @@ function renderTable(data) {
 }
 
 function updateSumsRow() {
+  if (!lastData) return;
+  const bar=document.getElementById("sumsBar");
   const row=document.getElementById("sumsRow");
-  if (!row||!lastData) return;
+  if (!bar||!row) return;
+
   const totalLabel = lang==="en"?"Total":"Всього";
-  // Нормалізуємо ключі сум до нижнього регістру для порівняння
   const sumsLower={};
   for (const [k,v] of Object.entries(lastSums)) sumsLower[k.toLowerCase()]=v;
+
   let first=true;
   const cells=lastData.columns.map(c=>{
-    if (first) {
-      first=false;
-      return `<td style="color:var(--text-muted);font-weight:400">${totalLabel}</td>`;
-    }
+    if (first) { first=false; return `<td style="color:var(--text-muted);font-weight:400">${totalLabel}</td>`; }
     const v=sumsLower[c.toLowerCase()];
     return `<td>${v!=null?formatNum(v):""}</td>`;
   }).join("");
-  row.innerHTML=`<tr>${cells}</tr>`;
+  row.innerHTML=cells;
+
+  // Sync column widths with thead
+  const wrap=document.getElementById("tableWrap");
+  const ths=wrap.querySelectorAll("thead th");
+  const tds=row.querySelectorAll("td");
+  ths.forEach((th,i)=>{ if(tds[i]) tds[i].style.width=th.offsetWidth+"px"; });
+
+  bar.classList.remove("hidden");
 }
 
 function formatNum(v) {
@@ -702,6 +708,7 @@ document.addEventListener("click",e=>{
 function showLoading() {
   document.getElementById("tableWrap").innerHTML=`<div class="state-box"><div class="spinner"></div><div>${t("loading")}</div></div>`;
   document.getElementById("pagination").style.display="none";
+  document.getElementById("sumsBar").classList.add("hidden");
 }
 function showError(msg) {
   document.getElementById("tableWrap").innerHTML=`<div class="state-box"><div class="state-icon">⚠️</div><div class="error-text">${esc(msg)}</div></div>`;
