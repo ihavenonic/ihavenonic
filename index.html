@@ -119,6 +119,7 @@
   tr:hover td{background:var(--row-hover)}
 
   /* SUMS ROW */
+  tfoot{position:sticky;bottom:0;z-index:10}
   tfoot td{padding:7px 14px;border-top:2px solid var(--border);font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);background:var(--th-bg);white-space:nowrap}
 
   /* FILTER POPUP */
@@ -251,6 +252,7 @@ let isDark        = false;
 let fpColumn      = null;
 let fpAllValues   = [];
 let fpSelected    = new Set();
+let fpCurrentVisible = [];
 
 // ── I18N ─────────────────────────────────────────────────────────────────────
 const UI = {
@@ -500,12 +502,8 @@ function renderTable(data) {
     `<tr>${row.map(cell=>`<td title="${esc(cell)}">${esc(cell)}</td>`).join("")}</tr>`
   ).join("");
 
-  // Tfoot for sums
-  const tfootCells=data.columns.map(c=>{
-    const v=lastSums[c];
-    if (v==null) return `<td></td>`;
-    return `<td>${formatNum(v)}</td>`;
-  }).join("");
+  // Tfoot - render empty cells, fill after sums load
+  const tfootCells=data.columns.map(()=>`<td></td>`).join("");
 
   wrap.innerHTML=`<table>
     <thead><tr>${ths}</tr></thead>
@@ -601,64 +599,67 @@ async function openFilterPopup(col, anchorEl) {
     document.getElementById("fpSelectAll").style.display="flex";
     document.getElementById("fpSearch").disabled=false;
     fpAllValues=data.values;
-    // Current selection
+    fpCurrentVisible=data.values;
+    // Restore existing selection for this column
     fpSelected=colFilters[col]?new Set(colFilters[col]):new Set();
-    renderFpList(fpAllValues);
+    renderFpList(fpCurrentVisible);
   } catch(e) {
     document.getElementById("fpList").innerHTML=`<div class="fp-not-filterable" style="color:var(--danger)">${e.message}</div>`;
   }
 }
 
-function renderFpList(values) {
+function renderFpList(visibleValues) {
   const list=document.getElementById("fpList");
-  if (!values.length) { list.innerHTML=`<div class="fp-not-filterable">—</div>`; return; }
-  list.innerHTML=values.map(v=>{
-    const checked=fpSelected.size===0||fpSelected.has(v)?"checked":"";
+  if (!visibleValues.length) { list.innerHTML=`<div class="fp-not-filterable">—</div>`; return; }
+  // fpSelected зберігається окремо — чекбокси лише відображають стан
+  list.innerHTML=visibleValues.map(v=>{
+    const checked=fpSelected.has(v)?"checked":"";
+    const id=`fpc_${Math.random().toString(36).slice(2)}`;
     return `<div class="fp-item">
-      <input type="checkbox" id="fpc_${esc(v)}" value="${esc(v)}" ${checked}>
-      <label for="fpc_${esc(v)}">${esc(v===""?"(пусто)":v)}</label>
+      <input type="checkbox" id="${id}" data-val="${esc(v)}" ${checked}>
+      <label for="${id}">${esc(v===""?"(пусто)":v)}</label>
     </div>`;
   }).join("");
-  // Update select-all state
-  updateSelectAll();
+  updateSelectAll(visibleValues);
   list.querySelectorAll("input[type=checkbox]").forEach(cb=>{
     cb.addEventListener("change",()=>{
-      if (cb.checked) fpSelected.add(cb.value); else fpSelected.delete(cb.value);
-      updateSelectAll();
+      const v=cb.dataset.val;
+      if (cb.checked) fpSelected.add(v); else fpSelected.delete(v);
+      updateSelectAll(fpCurrentVisible);
     });
   });
 }
 
-function updateSelectAll() {
+function updateSelectAll(visibleValues) {
+  fpCurrentVisible = visibleValues || fpCurrentVisible;
   const cb=document.getElementById("fpSelectAllCb");
-  const all=document.getElementById("fpList").querySelectorAll("input[type=checkbox]");
-  const checked=[...all].filter(c=>c.checked).length;
-  cb.checked=checked===all.length;
-  cb.indeterminate=checked>0&&checked<all.length;
+  const visible=fpCurrentVisible||[];
+  const selectedVisible=visible.filter(v=>fpSelected.has(v)).length;
+  cb.checked=visible.length>0&&selectedVisible===visible.length;
+  cb.indeterminate=selectedVisible>0&&selectedVisible<visible.length;
 }
 
-// fp search
+// fp search — зберігає поточні видимі значення, не скидає fpSelected
 document.getElementById("fpSearch").addEventListener("input",e=>{
   const q=e.target.value.toLowerCase();
-  const filtered=fpAllValues.filter(v=>v.toLowerCase().includes(q));
-  renderFpList(filtered);
+  fpCurrentVisible=fpAllValues.filter(v=>v.toLowerCase().includes(q));
+  renderFpList(fpCurrentVisible);
 });
 
-// select all
+// select all — впливає лише на видимі значення
 document.getElementById("fpSelectAllCb").addEventListener("change",e=>{
-  const all=document.getElementById("fpList").querySelectorAll("input[type=checkbox]");
-  all.forEach(cb=>{ cb.checked=e.target.checked; if(e.target.checked) fpSelected.add(cb.value); else fpSelected.delete(cb.value); });
+  const visible=fpCurrentVisible||fpAllValues;
+  if (e.target.checked) visible.forEach(v=>fpSelected.add(v));
+  else visible.forEach(v=>fpSelected.delete(v));
+  renderFpList(visible);
 });
 
 // apply
 document.getElementById("fpApply").addEventListener("click",()=>{
-  // If all selected or none selected -> no filter
-  const allCbs=document.getElementById("fpList").querySelectorAll("input[type=checkbox]");
-  const checkedCbs=[...allCbs].filter(c=>c.checked);
-  if (checkedCbs.length===0||checkedCbs.length===allCbs.length) {
+  if (fpSelected.size===0||fpSelected.size===fpAllValues.length) {
     delete colFilters[fpColumn];
   } else {
-    colFilters[fpColumn]=new Set(checkedCbs.map(c=>c.value));
+    colFilters[fpColumn]=new Set(fpSelected);
   }
   closePopup();
   currentPage=1;
