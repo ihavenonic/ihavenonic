@@ -6,8 +6,8 @@
 <title>НСЗУ — Дані</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="labels.js"></script>
 <style>
-  /* ── LIGHT THEME (default) ── */
   :root {
     --bg: #f5f6f8;
     --surface: #ffffff;
@@ -25,8 +25,6 @@
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
   }
-
-  /* ── DARK THEME ── */
   [data-theme="dark"] {
     --bg: #0e0f11;
     --surface: #16181c;
@@ -44,7 +42,6 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background: var(--bg);
     color: var(--text);
@@ -83,13 +80,7 @@
     animation: pulse 2s infinite;
   }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-  .status-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  /* ── THEME TOGGLE ── */
+  .status-label { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
   .theme-toggle {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -109,7 +100,7 @@
   /* ── LAYOUT ── */
   .layout {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 300px 1fr;
     height: calc(100vh - 49px);
   }
 
@@ -138,34 +129,13 @@
     gap: 3px;
   }
   .table-item:hover { background: var(--surface2); }
-  .table-item.active {
-    border-left-color: var(--accent);
-    background: var(--accent-dim);
-  }
-  .table-name {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text);
-    word-break: break-all;
-  }
-  .table-rows {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-  .sidebar-loading {
-    padding: 16px;
-    color: var(--text-muted);
-    font-size: 12px;
-    font-family: var(--mono);
-  }
+  .table-item.active { border-left-color: var(--accent); background: var(--accent-dim); }
+  .table-name { font-family: var(--sans); font-size: 13px; color: var(--text); }
+  .table-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+  .sidebar-loading { padding: 16px; color: var(--text-muted); font-size: 12px; font-family: var(--mono); }
 
   /* ── MAIN ── */
-  main {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: var(--bg);
-  }
+  main { display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
 
   .toolbar {
     padding: 10px 16px;
@@ -201,7 +171,7 @@
   input[type=text]:focus, select:focus { border-color: var(--accent); }
   #searchInput { width: 200px; }
   #columnSelect { width: 150px; }
-  #pageSizeSelect { width: 100px; }
+  #pageSizeSelect { width: 110px; }
 
   .btn {
     padding: 6px 14px;
@@ -216,32 +186,35 @@
   .btn-primary { background: var(--accent); color: #fff; }
   [data-theme="dark"] .btn-primary { color: #000; }
   .btn-primary:hover { opacity: .85; }
-  .btn-ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-  }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
   .btn-ghost:disabled { opacity: .4; cursor: default; }
 
-  /* ── TABLE ── */
-  .table-wrap {
-    flex: 1;
-    overflow: auto;
-    position: relative;
+  /* ── DESCRIPTION BOX ── */
+  .description-box {
+    margin: 14px 16px 0;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    min-height: 48px;
+    white-space: pre-wrap;
   }
+  .description-box:empty::before {
+    content: "Опис набору даних. Відредагуйте цей текст у labels.js";
+    color: var(--border);
+    font-style: italic;
+  }
+  .description-box.hidden { display: none; }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  thead {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--th-bg);
-  }
+  /* ── TABLE ── */
+  .table-wrap { flex: 1; overflow: auto; position: relative; margin-top: 14px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead { position: sticky; top: 0; z-index: 10; background: var(--th-bg); }
   th {
     padding: 9px 14px;
     text-align: left;
@@ -258,8 +231,15 @@
     transition: color .1s;
   }
   th:hover { color: var(--accent); }
-  th.sort-asc::after  { content: " ↑"; color: var(--accent); }
-  th.sort-desc::after { content: " ↓"; color: var(--accent); }
+
+  /* Стрілки сортування — завжди видно, активна підсвічена */
+  .th-inner { display: flex; align-items: center; gap: 5px; }
+  .sort-arrows { display: flex; flex-direction: column; gap: 1px; opacity: .3; }
+  .sort-arrows .arr { font-size: 8px; line-height: 1; }
+  th.sort-asc  .sort-arrows .arr-up   { opacity: 1; color: var(--accent); }
+  th.sort-desc .sort-arrows .arr-down { opacity: 1; color: var(--accent); }
+  th.sort-asc  .sort-arrows,
+  th.sort-desc .sort-arrows { opacity: 1; }
 
   td {
     padding: 7px 14px;
@@ -286,25 +266,19 @@
     color: var(--text-muted);
     background: var(--surface);
     flex-wrap: wrap;
+    margin-top: 14px;
   }
   .pagination .sep { flex: 1; }
   .page-info { color: var(--text); }
 
   /* ── STATES ── */
   .state-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    flex-direction: column;
-    gap: 12px;
-    color: var(--text-muted);
-    font-family: var(--mono);
-    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    height: 100%; flex-direction: column; gap: 12px;
+    color: var(--text-muted); font-family: var(--mono); font-size: 13px;
   }
   .state-icon { font-size: 32px; }
   .error-text { color: var(--danger); font-size: 12px; max-width: 400px; text-align: center; }
-
   .spinner {
     width: 24px; height: 24px;
     border: 2px solid var(--border);
@@ -341,13 +315,15 @@
       <input type="text" id="searchInput" placeholder="Пошук..." disabled>
       <select id="columnSelect" disabled><option value="">Всі колонки</option></select>
       <button class="btn btn-primary" id="searchBtn" disabled>Знайти</button>
-      <button class="btn btn-ghost" id="resetBtn" disabled>Скинути</button>
+      <button class="btn btn-ghost" id="resetBtn" disabled>Скинути фільтри</button>
       <select id="pageSizeSelect">
         <option value="100" selected>100 рядків</option>
         <option value="1000">1 000 рядків</option>
         <option value="10000">10 000 рядків</option>
       </select>
     </div>
+
+    <div class="description-box hidden" id="descriptionBox"></div>
 
     <div class="table-wrap" id="tableWrap">
       <div class="state-box">
@@ -367,7 +343,7 @@
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const API = "https://web-production-02dcb.up.railway.app";
+const API = "REPLACE_WITH_YOUR_RAILWAY_URL";
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let currentTable  = null;
@@ -376,12 +352,49 @@ let totalPages    = 1;
 let currentSearch = "";
 let currentColumn = "";
 let currentSort   = { by: null, dir: "asc" };
-let allColumns    = [];
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+
+// Парсить назву таблиці: latest_{код}_{дата}_...
+// Повертає { code, date, label }
+function parseTableName(name) {
+  // Видаляємо префікс latest_
+  const withoutPrefix = name.replace(/^latest_/, "");
+
+  // Перший сегмент — код (6 символів або "manual")
+  const parts = withoutPrefix.split("_");
+  const code = parts[0];
+
+  // Шукаємо дату у форматі YYYY_MM_DD
+  const dateMatch = withoutPrefix.match(/(\d{4})_(\d{2})_(\d{2})/);
+  const date = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : null;
+
+  // Красива назва з labels.js або оригінальна
+  const labels = window.TABLE_LABELS || {};
+  const label = labels[code] || withoutPrefix.replace(/_/g, " ");
+
+  return { code, date, label };
+}
+
+function formatSidebarItem(name, rows) {
+  const { label, date } = parseTableName(name);
+  const datePart = date ? ` (оновлено ${date})` : "";
+  const rowsPart = rows !== null ? `${rows.toLocaleString("uk")} рядків` : "";
+  return { displayName: label + datePart, rowsPart };
+}
+
+function esc(v) {
+  if (v === null || v === undefined) return "";
+  return String(v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 // ── THEME ─────────────────────────────────────────────────────────────────────
 const themeToggle = document.getElementById("themeToggle");
 let isDark = false;
-
 themeToggle.addEventListener("click", () => {
   isDark = !isDark;
   document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
@@ -409,12 +422,14 @@ async function loadTableList() {
     const data = await r.json();
     el.innerHTML = "";
     data.tables.forEach(t => {
+      const { displayName, rowsPart } = formatSidebarItem(t.name, t.rows);
       const div = document.createElement("div");
       div.className = "table-item";
       div.dataset.name = t.name;
-      const label = t.name.replace(/^latest_/, "").replace(/_/g, " ");
-      const rows = t.rows !== null ? `${t.rows.toLocaleString("uk")} рядків` : "";
-      div.innerHTML = `<div class="table-name">${label}</div><div class="table-rows">${rows}</div>`;
+      div.innerHTML = `
+        <div class="table-name">${esc(displayName)}</div>
+        <div class="table-meta">${esc(rowsPart)}</div>
+      `;
       div.addEventListener("click", () => selectTable(t.name));
       el.appendChild(div);
     });
@@ -435,8 +450,22 @@ function selectTable(name) {
     el.classList.toggle("active", el.dataset.name === name)
   );
 
-  const label = name.replace(/^latest_/, "").replace(/_/g, " ");
-  document.getElementById("toolbarTitle").textContent = label;
+  const { label, date } = parseTableName(name);
+  const datePart = date ? ` · ${date}` : "";
+  document.getElementById("toolbarTitle").textContent = label + datePart;
+
+  // Опис з labels.js
+  const descEl = document.getElementById("descriptionBox");
+  const descriptions = window.TABLE_DESCRIPTIONS || {};
+  const { code } = parseTableName(name);
+  if (descriptions[code]) {
+    descEl.textContent = descriptions[code];
+    descEl.classList.remove("hidden");
+  } else {
+    descEl.textContent = "";
+    descEl.classList.add("hidden");
+  }
+
   document.getElementById("searchInput").value = "";
   document.getElementById("searchInput").disabled = false;
   document.getElementById("searchBtn").disabled = false;
@@ -464,7 +493,6 @@ async function loadData() {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const data = await r.json();
     totalPages = data.total_pages;
-    allColumns = data.columns;
     renderTable(data);
     updateColumnSelect(data.columns);
     updatePagination(data);
@@ -485,7 +513,15 @@ function renderTable(data) {
   const ths = data.columns.map(c => {
     let cls = "";
     if (currentSort.by === c) cls = currentSort.dir === "asc" ? "sort-asc" : "sort-desc";
-    return `<th class="${cls}" data-col="${esc(c)}" title="${esc(c)}">${esc(c)}</th>`;
+    return `<th class="${cls}" data-col="${esc(c)}">
+      <div class="th-inner">
+        <span>${esc(c)}</span>
+        <span class="sort-arrows">
+          <span class="arr arr-up">▲</span>
+          <span class="arr arr-down">▼</span>
+        </span>
+      </div>
+    </th>`;
   }).join("");
 
   const trs = data.rows.map(row =>
@@ -494,7 +530,6 @@ function renderTable(data) {
 
   wrap.innerHTML = `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
 
-  // Сортування по кліку на заголовок
   wrap.querySelectorAll("th").forEach(th => {
     th.addEventListener("click", () => {
       const col = th.dataset.col;
@@ -508,15 +543,6 @@ function renderTable(data) {
       loadData();
     });
   });
-}
-
-function esc(v) {
-  if (v === null || v === undefined) return "";
-  return String(v)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 // ── COLUMN SELECT ─────────────────────────────────────────────────────────────
@@ -588,7 +614,6 @@ document.getElementById("pageSizeSelect").addEventListener("change", () => {
   loadData();
 });
 
-// ── START ─────────────────────────────────────────────────────────────────────
 init();
 </script>
 </body>
