@@ -343,7 +343,7 @@ function applyLang() {
     const el=document.getElementById("descriptionBox");
     el.textContent=desc; el.classList.toggle("hidden",!desc);
   }
-  if (lastData) renderTable(lastData);
+  if (lastData) { renderTable(lastData); updateSumsRow(); }
   renderFiltersBar();
 }
 
@@ -530,8 +530,15 @@ function renderTable(data) {
 function updateSumsRow() {
   const row=document.getElementById("sumsRow");
   if (!row||!lastData) return;
+  const totalLabel = lang==="en"?"Total":"Всього";
+  let first=true;
   const cells=lastData.columns.map(c=>{
     const v=lastSums[c];
+    if (first) {
+      first=false;
+      // First cell always shows "Всього/Total" label
+      return `<td style="color:var(--text-muted);font-weight:400">${totalLabel}</td>`;
+    }
     return `<td>${v!=null?formatNum(v):""}</td>`;
   }).join("");
   row.innerHTML=`<tr>${cells}</tr>`;
