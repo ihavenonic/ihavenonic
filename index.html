@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>НСЗУ — Дані</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f11;
+    --surface: #16181c;
+    --border: #2a2d34;
+    --accent: #4ade80;
+    --accent-dim: #1a3a26;
+    --text: #e2e4e9;
+    --text-muted: #6b7280;
+    --danger: #f87171;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .header-sep { flex: 1; }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: .3; }
+  }
+  .status-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    height: calc(100vh - 53px);
+  }
+
+  /* ── SIDEBAR ── */
+  aside {
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+  }
+  .sidebar-header {
+    padding: 0 16px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+  .table-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all .15s;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .table-item:hover { background: var(--surface); }
+  .table-item.active {
+    border-left-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .table-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    word-break: break-all;
+  }
+  .table-rows {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .sidebar-loading {
+    padding: 16px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-family: var(--mono);
+  }
+
+  /* ── MAIN ── */
+  main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .toolbar {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .toolbar-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    flex: 1;
+    min-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  input[type=text], select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  input[type=text]:focus, select:focus {
+    border-color: var(--accent);
+  }
+  #searchInput { width: 220px; }
+  #columnSelect { width: 160px; }
+
+  .btn {
+    padding: 7px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    transition: all .15s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { background: #86efac; }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── TABLE CONTAINER ── */
+  .table-wrap {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--surface);
+  }
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  th:hover { color: var(--accent); }
+  td {
+    padding: 8px 14px;
+    border-bottom: 1px solid #1e2026;
+    color: var(--text);
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  tr:hover td { background: var(--surface); }
+
+  /* ── PAGINATION ── */
+  .pagination {
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .pagination .sep { flex: 1; }
+  .page-info { color: var(--text); }
+
+  /* ── STATES ── */
+  .state-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .state-icon { font-size: 32px; }
+  .error-text { color: var(--danger); font-size: 12px; max-width: 400px; text-align: center; }
+
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3d44; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">НСЗУ / Відкриті дані</div>
+  <div class="header-sep"></div>
+  <div class="status-dot" id="statusDot"></div>
+  <div class="status-label" id="statusLabel">з'єднання...</div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sidebar-header">Таблиці</div>
+    <div id="tableList"><div class="sidebar-loading">Завантаження...</div></div>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <div class="toolbar-title" id="toolbarTitle">← Оберіть таблицю</div>
+      <input type="text" id="searchInput" placeholder="Пошук..." disabled>
+      <select id="columnSelect" disabled><option value="">Всі колонки</option></select>
+      <button class="btn btn-primary" id="searchBtn" disabled>Знайти</button>
+      <button class="btn btn-ghost" id="resetBtn" disabled>Скинути</button>
+    </div>
+
+    <div class="table-wrap" id="tableWrap">
+      <div class="state-box">
+        <div class="state-icon">📋</div>
+        <div>Оберіть таблицю зі списку зліва</div>
+      </div>
+    </div>
+
+    <div class="pagination" id="pagination" style="display:none">
+      <button class="btn btn-ghost" id="prevBtn">← Назад</button>
+      <button class="btn btn-ghost" id="nextBtn">Вперед →</button>
+      <div class="sep"></div>
+      <div class="page-info" id="pageInfo"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+// Замініть на URL вашого Railway-деплою, наприклад:
+// const API = "https://nszu-api-production.up.railway.app"
+const API = "REPLACE_WITH_YOUR_RAILWAY_URL";
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let currentTable = null;
+let currentPage  = 1;
+let totalPages   = 1;
+let currentSearch = "";
+let currentColumn = "";
+let allColumns   = [];
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    await fetch(`${API}/health`);
+    document.getElementById("statusDot").style.background = "var(--accent)";
+    document.getElementById("statusLabel").textContent = "онлайн";
+  } catch {
+    document.getElementById("statusDot").style.background = "var(--danger)";
+    document.getElementById("statusLabel").textContent = "недоступний";
+  }
+  await loadTableList();
+}
+
+// ── TABLE LIST ────────────────────────────────────────────────────────────────
+async function loadTableList() {
+  const el = document.getElementById("tableList");
+  try {
+    const r = await fetch(`${API}/tables`);
+    const data = await r.json();
+    el.innerHTML = "";
+    data.tables.forEach(t => {
+      const div = document.createElement("div");
+      div.className = "table-item";
+      div.dataset.name = t.name;
+      const label = t.name.replace(/^latest_/, "").replace(/_/g, " ");
+      const rows = t.rows !== null ? `${t.rows.toLocaleString("uk")} рядків` : "";
+      div.innerHTML = `<div class="table-name">${label}</div><div class="table-rows">${rows}</div>`;
+      div.addEventListener("click", () => selectTable(t.name));
+      el.appendChild(div);
+    });
+  } catch(e) {
+    el.innerHTML = `<div class="sidebar-loading" style="color:var(--danger)">Помилка завантаження</div>`;
+  }
+}
+
+// ── SELECT TABLE ──────────────────────────────────────────────────────────────
+function selectTable(name) {
+  currentTable = name;
+  currentPage  = 1;
+  currentSearch = "";
+  currentColumn = "";
+
+  document.querySelectorAll(".table-item").forEach(el => {
+    el.classList.toggle("active", el.dataset.name === name);
+  });
+
+  const label = name.replace(/^latest_/, "").replace(/_/g, " ");
+  document.getElementById("toolbarTitle").textContent = label;
+  document.getElementById("searchInput").value = "";
+  document.getElementById("searchInput").disabled = false;
+  document.getElementById("searchBtn").disabled = false;
+  document.getElementById("resetBtn").disabled = false;
+
+  loadData();
+}
+
+// ── LOAD DATA ─────────────────────────────────────────────────────────────────
+async function loadData() {
+  if (!currentTable) return;
+
+  showLoading();
+
+  const params = new URLSearchParams({ page: currentPage });
+  if (currentSearch) params.set("search", currentSearch);
+  if (currentColumn) params.set("column", currentColumn);
+
+  try {
+    const r = await fetch(`${API}/table/${currentTable}?${params}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    totalPages = data.total_pages;
+    allColumns = data.columns;
+    renderTable(data);
+    updateColumnSelect(data.columns);
+    updatePagination(data);
+  } catch(e) {
+    showError(e.message);
+  }
+}
+
+// ── RENDER TABLE ──────────────────────────────────────────────────────────────
+function renderTable(data) {
+  const wrap = document.getElementById("tableWrap");
+
+  if (!data.rows.length) {
+    wrap.innerHTML = `<div class="state-box"><div class="state-icon">🔍</div><div>Нічого не знайдено</div></div>`;
+    return;
+  }
+
+  const ths = data.columns.map(c =>
+    `<th title="${c}">${c}</th>`
+  ).join("");
+
+  const trs = data.rows.map(row =>
+    `<tr>${row.map(cell => `<td title="${esc(cell)}">${esc(cell)}</td>`).join("")}</tr>`
+  ).join("");
+
+  wrap.innerHTML = `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+}
+
+function esc(v) {
+  if (v === null || v === undefined) return "";
+  return String(v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// ── COLUMN SELECT ─────────────────────────────────────────────────────────────
+function updateColumnSelect(columns) {
+  const sel = document.getElementById("columnSelect");
+  sel.disabled = false;
+  const prev = sel.value;
+  sel.innerHTML = `<option value="">Всі колонки</option>` +
+    columns.map(c => `<option value="${c}" ${c === prev ? "selected" : ""}>${c}</option>`).join("");
+}
+
+// ── PAGINATION ────────────────────────────────────────────────────────────────
+function updatePagination(data) {
+  const pg = document.getElementById("pagination");
+  pg.style.display = "flex";
+
+  const from = (data.page - 1) * data.page_size + 1;
+  const to   = Math.min(data.page * data.page_size, data.total_rows);
+  document.getElementById("pageInfo").textContent =
+    `${from.toLocaleString("uk")}–${to.toLocaleString("uk")} з ${data.total_rows.toLocaleString("uk")} рядків · стор. ${data.page} / ${data.total_pages}`;
+
+  document.getElementById("prevBtn").disabled = data.page <= 1;
+  document.getElementById("nextBtn").disabled = data.page >= data.total_pages;
+}
+
+// ── STATES ────────────────────────────────────────────────────────────────────
+function showLoading() {
+  document.getElementById("tableWrap").innerHTML =
+    `<div class="state-box"><div class="spinner"></div><div>Завантаження...</div></div>`;
+  document.getElementById("pagination").style.display = "none";
+}
+
+function showError(msg) {
+  document.getElementById("tableWrap").innerHTML =
+    `<div class="state-box"><div class="state-icon">⚠️</div><div class="error-text">${esc(msg)}</div></div>`;
+  document.getElementById("pagination").style.display = "none";
+}
+
+// ── EVENTS ────────────────────────────────────────────────────────────────────
+document.getElementById("searchBtn").addEventListener("click", () => {
+  currentSearch = document.getElementById("searchInput").value.trim();
+  currentColumn = document.getElementById("columnSelect").value;
+  currentPage = 1;
+  loadData();
+});
+
+document.getElementById("searchInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("searchBtn").click();
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  currentSearch = "";
+  currentColumn = "";
+  currentPage = 1;
+  document.getElementById("searchInput").value = "";
+  document.getElementById("columnSelect").value = "";
+  loadData();
+});
+
+document.getElementById("prevBtn").addEventListener("click", () => {
+  if (currentPage > 1) { currentPage--; loadData(); }
+});
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+  if (currentPage < totalPages) { currentPage++; loadData(); }
+});
+
+// ── START ─────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
