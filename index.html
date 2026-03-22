@@ -531,14 +531,16 @@ function updateSumsRow() {
   const row=document.getElementById("sumsRow");
   if (!row||!lastData) return;
   const totalLabel = lang==="en"?"Total":"Всього";
+  // Нормалізуємо ключі сум до нижнього регістру для порівняння
+  const sumsLower={};
+  for (const [k,v] of Object.entries(lastSums)) sumsLower[k.toLowerCase()]=v;
   let first=true;
   const cells=lastData.columns.map(c=>{
-    const v=lastSums[c];
     if (first) {
       first=false;
-      // First cell always shows "Всього/Total" label
       return `<td style="color:var(--text-muted);font-weight:400">${totalLabel}</td>`;
     }
+    const v=sumsLower[c.toLowerCase()];
     return `<td>${v!=null?formatNum(v):""}</td>`;
   }).join("");
   row.innerHTML=`<tr>${cells}</tr>`;
