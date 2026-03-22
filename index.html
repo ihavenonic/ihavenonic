@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +7,40 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
+  /* ── LIGHT THEME (default) ── */
   :root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --surface2: #eef0f3;
+    --border: #dde0e6;
+    --accent: #16a34a;
+    --accent-dim: #dcfce7;
+    --text: #111318;
+    --text-muted: #6b7280;
+    --danger: #dc2626;
+    --th-bg: #f0f2f5;
+    --row-hover: #f0f2f5;
+    --row-border: #eef0f3;
+    --scrollbar-thumb: #c8cdd6;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  /* ── DARK THEME ── */
+  [data-theme="dark"] {
     --bg: #0e0f11;
     --surface: #16181c;
+    --surface2: #1e2026;
     --border: #2a2d34;
     --accent: #4ade80;
     --accent-dim: #1a3a26;
     --text: #e2e4e9;
     --text-muted: #6b7280;
     --danger: #f87171;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
+    --th-bg: #16181c;
+    --row-hover: #1e2026;
+    --row-border: #1e2026;
+    --scrollbar-thumb: #3a3d44;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,18 +51,19 @@
     font-family: var(--sans);
     font-size: 14px;
     min-height: 100vh;
+    transition: background .2s, color .2s;
   }
 
   /* ── HEADER ── */
   header {
     border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     position: sticky;
     top: 0;
-    background: var(--bg);
+    background: var(--surface);
     z-index: 100;
   }
   .logo {
@@ -58,21 +82,35 @@
     background: var(--accent);
     animation: pulse 2s infinite;
   }
-  @keyframes pulse {
-    0%,100% { opacity: 1; }
-    50% { opacity: .3; }
-  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
   .status-label {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--text-muted);
   }
 
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all .15s;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
   /* ── LAYOUT ── */
   .layout {
     display: grid;
     grid-template-columns: 280px 1fr;
-    height: calc(100vh - 53px);
+    height: calc(100vh - 49px);
   }
 
   /* ── SIDEBAR ── */
@@ -80,6 +118,7 @@
     border-right: 1px solid var(--border);
     overflow-y: auto;
     padding: 16px 0;
+    background: var(--surface);
   }
   .sidebar-header {
     padding: 0 16px 12px;
@@ -98,7 +137,7 @@
     flex-direction: column;
     gap: 3px;
   }
-  .table-item:hover { background: var(--surface); }
+  .table-item:hover { background: var(--surface2); }
   .table-item.active {
     border-left-color: var(--accent);
     background: var(--accent-dim);
@@ -125,46 +164,47 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: var(--bg);
   }
 
   .toolbar {
-    padding: 12px 20px;
+    padding: 10px 16px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
+    background: var(--surface);
   }
   .toolbar-title {
     font-family: var(--mono);
     font-size: 13px;
     color: var(--accent);
     flex: 1;
-    min-width: 200px;
+    min-width: 160px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   input[type=text], select {
-    background: var(--surface);
+    background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 7px 12px;
+    padding: 6px 10px;
     border-radius: 6px;
     font-family: var(--mono);
     font-size: 12px;
     outline: none;
     transition: border-color .15s;
   }
-  input[type=text]:focus, select:focus {
-    border-color: var(--accent);
-  }
-  #searchInput { width: 220px; }
-  #columnSelect { width: 160px; }
+  input[type=text]:focus, select:focus { border-color: var(--accent); }
+  #searchInput { width: 200px; }
+  #columnSelect { width: 150px; }
+  #pageSizeSelect { width: 100px; }
 
   .btn {
-    padding: 7px 16px;
+    padding: 6px 14px;
     border-radius: 6px;
     border: none;
     cursor: pointer;
@@ -173,19 +213,18 @@
     font-weight: 600;
     transition: all .15s;
   }
-  .btn-primary {
-    background: var(--accent);
-    color: #000;
-  }
-  .btn-primary:hover { background: #86efac; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  [data-theme="dark"] .btn-primary { color: #000; }
+  .btn-primary:hover { opacity: .85; }
   .btn-ghost {
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text-muted);
   }
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-ghost:disabled { opacity: .4; cursor: default; }
 
-  /* ── TABLE CONTAINER ── */
+  /* ── TABLE ── */
   .table-wrap {
     flex: 1;
     overflow: auto;
@@ -201,10 +240,10 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--surface);
+    background: var(--th-bg);
   }
   th {
-    padding: 10px 14px;
+    padding: 9px 14px;
     text-align: left;
     font-family: var(--mono);
     font-size: 11px;
@@ -216,11 +255,15 @@
     white-space: nowrap;
     cursor: pointer;
     user-select: none;
+    transition: color .1s;
   }
   th:hover { color: var(--accent); }
+  th.sort-asc::after  { content: " ↑"; color: var(--accent); }
+  th.sort-desc::after { content: " ↓"; color: var(--accent); }
+
   td {
-    padding: 8px 14px;
-    border-bottom: 1px solid #1e2026;
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--row-border);
     color: var(--text);
     max-width: 320px;
     overflow: hidden;
@@ -229,11 +272,11 @@
     font-family: var(--mono);
     font-size: 12px;
   }
-  tr:hover td { background: var(--surface); }
+  tr:hover td { background: var(--row-hover); }
 
   /* ── PAGINATION ── */
   .pagination {
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -241,6 +284,8 @@
     font-family: var(--mono);
     font-size: 12px;
     color: var(--text-muted);
+    background: var(--surface);
+    flex-wrap: wrap;
   }
   .pagination .sep { flex: 1; }
   .page-info { color: var(--text); }
@@ -269,11 +314,9 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #3a3d44; }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
 </style>
 </head>
 <body>
@@ -281,6 +324,7 @@
 <header>
   <div class="logo">НСЗУ / Відкриті дані</div>
   <div class="header-sep"></div>
+  <button class="theme-toggle" id="themeToggle">☀️ Світла</button>
   <div class="status-dot" id="statusDot"></div>
   <div class="status-label" id="statusLabel">з'єднання...</div>
 </header>
@@ -298,6 +342,11 @@
       <select id="columnSelect" disabled><option value="">Всі колонки</option></select>
       <button class="btn btn-primary" id="searchBtn" disabled>Знайти</button>
       <button class="btn btn-ghost" id="resetBtn" disabled>Скинути</button>
+      <select id="pageSizeSelect">
+        <option value="100" selected>100 рядків</option>
+        <option value="1000">1 000 рядків</option>
+        <option value="10000">10 000 рядків</option>
+      </select>
     </div>
 
     <div class="table-wrap" id="tableWrap">
@@ -317,20 +366,29 @@
 </div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
-// Замініть на URL вашого Railway-деплою, наприклад:
-// const API = "https://nszu-api-production.up.railway.app"
-const API = "https://web-production-02dcb.up.railway.app";
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const API = "REPLACE_WITH_YOUR_RAILWAY_URL";
 
-// ── STATE ────────────────────────────────────────────────────────────────────
-let currentTable = null;
-let currentPage  = 1;
-let totalPages   = 1;
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let currentTable  = null;
+let currentPage   = 1;
+let totalPages    = 1;
 let currentSearch = "";
 let currentColumn = "";
-let allColumns   = [];
+let currentSort   = { by: null, dir: "asc" };
+let allColumns    = [];
 
-// ── INIT ─────────────────────────────────────────────────────────────────────
+// ── THEME ─────────────────────────────────────────────────────────────────────
+const themeToggle = document.getElementById("themeToggle");
+let isDark = false;
+
+themeToggle.addEventListener("click", () => {
+  isDark = !isDark;
+  document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  themeToggle.textContent = isDark ? "🌙 Темна" : "☀️ Світла";
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
 async function init() {
   try {
     await fetch(`${API}/health`);
@@ -360,21 +418,22 @@ async function loadTableList() {
       div.addEventListener("click", () => selectTable(t.name));
       el.appendChild(div);
     });
-  } catch(e) {
+  } catch {
     el.innerHTML = `<div class="sidebar-loading" style="color:var(--danger)">Помилка завантаження</div>`;
   }
 }
 
 // ── SELECT TABLE ──────────────────────────────────────────────────────────────
 function selectTable(name) {
-  currentTable = name;
-  currentPage  = 1;
+  currentTable  = name;
+  currentPage   = 1;
   currentSearch = "";
   currentColumn = "";
+  currentSort   = { by: null, dir: "asc" };
 
-  document.querySelectorAll(".table-item").forEach(el => {
-    el.classList.toggle("active", el.dataset.name === name);
-  });
+  document.querySelectorAll(".table-item").forEach(el =>
+    el.classList.toggle("active", el.dataset.name === name)
+  );
 
   const label = name.replace(/^latest_/, "").replace(/_/g, " ");
   document.getElementById("toolbarTitle").textContent = label;
@@ -389,12 +448,16 @@ function selectTable(name) {
 // ── LOAD DATA ─────────────────────────────────────────────────────────────────
 async function loadData() {
   if (!currentTable) return;
-
   showLoading();
 
-  const params = new URLSearchParams({ page: currentPage });
+  const pageSize = document.getElementById("pageSizeSelect").value;
+  const params = new URLSearchParams({ page: currentPage, page_size: pageSize });
   if (currentSearch) params.set("search", currentSearch);
   if (currentColumn) params.set("column", currentColumn);
+  if (currentSort.by) {
+    params.set("sort_by", currentSort.by);
+    params.set("sort_dir", currentSort.dir);
+  }
 
   try {
     const r = await fetch(`${API}/table/${currentTable}?${params}`);
@@ -419,15 +482,32 @@ function renderTable(data) {
     return;
   }
 
-  const ths = data.columns.map(c =>
-    `<th title="${c}">${c}</th>`
-  ).join("");
+  const ths = data.columns.map(c => {
+    let cls = "";
+    if (currentSort.by === c) cls = currentSort.dir === "asc" ? "sort-asc" : "sort-desc";
+    return `<th class="${cls}" data-col="${esc(c)}" title="${esc(c)}">${esc(c)}</th>`;
+  }).join("");
 
   const trs = data.rows.map(row =>
     `<tr>${row.map(cell => `<td title="${esc(cell)}">${esc(cell)}</td>`).join("")}</tr>`
   ).join("");
 
   wrap.innerHTML = `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+
+  // Сортування по кліку на заголовок
+  wrap.querySelectorAll("th").forEach(th => {
+    th.addEventListener("click", () => {
+      const col = th.dataset.col;
+      if (currentSort.by === col) {
+        currentSort.dir = currentSort.dir === "asc" ? "desc" : "asc";
+      } else {
+        currentSort.by  = col;
+        currentSort.dir = "asc";
+      }
+      currentPage = 1;
+      loadData();
+    });
+  });
 }
 
 function esc(v) {
@@ -445,19 +525,17 @@ function updateColumnSelect(columns) {
   sel.disabled = false;
   const prev = sel.value;
   sel.innerHTML = `<option value="">Всі колонки</option>` +
-    columns.map(c => `<option value="${c}" ${c === prev ? "selected" : ""}>${c}</option>`).join("");
+    columns.map(c => `<option value="${esc(c)}" ${c === prev ? "selected" : ""}>${esc(c)}</option>`).join("");
 }
 
 // ── PAGINATION ────────────────────────────────────────────────────────────────
 function updatePagination(data) {
   const pg = document.getElementById("pagination");
   pg.style.display = "flex";
-
   const from = (data.page - 1) * data.page_size + 1;
   const to   = Math.min(data.page * data.page_size, data.total_rows);
   document.getElementById("pageInfo").textContent =
-    `${from.toLocaleString("uk")}–${to.toLocaleString("uk")} з ${data.total_rows.toLocaleString("uk")} рядків · стор. ${data.page} / ${data.total_pages}`;
-
+    `${from.toLocaleString("uk")}–${to.toLocaleString("uk")} з ${data.total_rows.toLocaleString("uk")} · стор. ${data.page} / ${data.total_pages}`;
   document.getElementById("prevBtn").disabled = data.page <= 1;
   document.getElementById("nextBtn").disabled = data.page >= data.total_pages;
 }
@@ -490,7 +568,8 @@ document.getElementById("searchInput").addEventListener("keydown", e => {
 document.getElementById("resetBtn").addEventListener("click", () => {
   currentSearch = "";
   currentColumn = "";
-  currentPage = 1;
+  currentSort   = { by: null, dir: "asc" };
+  currentPage   = 1;
   document.getElementById("searchInput").value = "";
   document.getElementById("columnSelect").value = "";
   loadData();
@@ -502,6 +581,11 @@ document.getElementById("prevBtn").addEventListener("click", () => {
 
 document.getElementById("nextBtn").addEventListener("click", () => {
   if (currentPage < totalPages) { currentPage++; loadData(); }
+});
+
+document.getElementById("pageSizeSelect").addEventListener("change", () => {
+  currentPage = 1;
+  loadData();
 });
 
 // ── START ─────────────────────────────────────────────────────────────────────
